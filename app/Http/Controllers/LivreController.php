@@ -12,25 +12,43 @@ class LivreController extends Controller
      * Affichage liste avec base de données SQLite
      * SÉANCE 2 : Utiliser Eloquent pour récupérer les données depuis SQLite
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Récupération des livres avec leurs catégories via Eloquent
-        $livres = Livre::with('categorie')->get();
+        // base query with eager loading
+        $query = Livre::with('categorie');
 
-        // Récupération des catégories pour le filtre
-        $categories = Categorie::actives()->get();
+        // recherche texte sur titre/auteur
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('titre', 'LIKE', "%{$search}%")
+                  ->orWhere('auteur', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // filtre par catégorie
+        if ($request->filled('categorie_id')) {
+            $query->where('categorie_id', $request->categorie_id);
+        }
+
+        // pagination et maintien des paramètres dans les liens
+        $livres = $query->orderBy('titre')
+                        ->paginate(10)
+                        ->appends($request->all());
+
+        $categories = Categorie::actives()->orderBy('nom')->get();
 
         $statistiques = [
             'totalLivres' => Livre::count(),
             'livresDisponibles' => Livre::disponible()->count(),
-            'totalCategories' => Categorie::actives()->count()
+            'totalCategories' => $categories->count()
         ];
 
         return view('livres.index', [
             'livres' => $livres,
             'categories' => $categories,
             'stats' => $statistiques,
-            'total' => $livres->count()
+            'total' => $livres->total(),
         ]);
     }
 
@@ -52,24 +70,48 @@ class LivreController extends Controller
     }
 
     /**
-     * Recherche de livres avec Eloquent
-     * SÉANCE 2 : Utiliser les scopes Eloquent pour la recherche
+     * Recherche de livres
+     * redirige vers index en conservant paramètres
      */
     public function search(Request $request)
     {
-        $query = $request->get('q', '');
+        // on utilise la même logique que index sachant que
+        // celui-ci traite déjà 'q' et 'categorie_id'.
+        return $this->index($request);
+    }
 
-        // Utilisation des scopes Eloquent pour la recherche
-        $livres = Livre::with('categorie')
-            ->when($query, function ($queryBuilder, $searchTerm) {
-                return $queryBuilder->recherche($searchTerm);
-            })
-            ->get();
+    /**
+     * Formulaire de création d'un livre
+     * Réservé aux admins et bibliothécaires
+     */
+    public function create()
+    {
+        $categories = Categorie::actives()->orderBy('nom')->get();
+        return view('livres.create', ['categories' => $categories]);
+    }
 
-        return view('livres.search', [
-            'livres' => $livres,
-            'query' => $query,
-            'total' => $livres->count()
+    /**
+     * Sauvegarde un nouveau livre dans la base de données
+     * Réservé aux admins et bibliothécaires
+     */
+    public function store(Request $request)
+    {
+        // Validation des données
+        $validated = $request->validate([
+            'titre' => 'required|string|max:255',
+            'auteur' => 'required|string|max:255',
+            'annee' => 'nullable|integer|min:1000|max:' . date('Y'),
+            'nb_pages' => 'nullable|integer|min:1',
+            'isbn' => 'nullable|string|max:20',
+            'resume' => 'nullable|string',
+            'categorie_id' => 'required|exists:categories,id',
+            'disponible' => 'nullable|boolean',
         ]);
+
+        // Créer le livre
+        $livre = Livre::create($validated);
+
+        return redirect()->route('livres.show', $livre->id)
+            ->with('success', 'Livre "' . $livre->titre . '" créé avec succès!');
     }
 }

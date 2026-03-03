@@ -129,7 +129,10 @@ APP_DEBUG=true
 APP_URL=http://localhost:8000
 SESSION_DRIVER=file
 ```
-
+> 💡 *Besoin d’explorer la base SQLite ?* utilisez la palette `SQLite: Open Database` et
+> sélectionnez `database/database.sqlite` (il y a déjà une connexion configurée dans
+> `.vscode/settings.json`), ou tapez `php artisan db:sqlite` pour un shell sqlite3
+> interactif.
 ### **2. Migrations de base déjà crées**
 ```bash
 # La table users existe déjà dans les migrations

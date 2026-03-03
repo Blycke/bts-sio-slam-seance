@@ -48,4 +48,20 @@ class Utilisateur extends Authenticatable
     {
         return $query->where('role', 'admin');
     }
+
+    // Helpers pour vérifier le rôle courant
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isBibliothecaire()
+    {
+        return $this->role === 'bibliothecaire';
+    }
+
+    public function isUtilisateur()
+    {
+        return $this->role === 'utilisateur';
+    }
 }

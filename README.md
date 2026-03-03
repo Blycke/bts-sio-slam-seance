@@ -312,6 +312,14 @@ bibliotech-laravel/
 │   ├── 📂 migrations/          # Migrations Laravel par défaut
 │   ├── 📂 seeders/            # Données de test (futurs)
 │   └── 📂 factories/          # Factories pour les tests (futurs)
+
+*💡 Vous pouvez ouvrir ce fichier facilement :*
+
+  * utilisez la palette de commande `SQLite: Open Database` et sélectionnez
+    `database/database.sqlite` (ou cliquez sur l'entrée déjà configurée dans
+    l'explorateur – elle est pré‑configurée dans `.vscode/settings.json`).
+  * ou bien exécutez `php artisan db:sqlite` pour lancer un shell interactif
+    sqlite3 dans votre terminal.
 ├── 📂 resources/
 │   ├── 📂 views/              # Templates Blade français
 │   │   ├── 📂 livres/         # Vues des livres

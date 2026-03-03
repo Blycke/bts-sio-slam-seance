@@ -33,8 +33,12 @@ Route::get('/livres', [LivreController::class, 'index'])->name('livres.index');
 // 4. Détail livre - Route avec paramètre
 Route::get('/livre/{id}', [LivreController::class, 'show'])->name('livres.show');
 
-// Recherche livre
+// Recherche livre (peut aussi pointer vers l'index avec query)
 Route::get('/recherche', [LivreController::class, 'search'])->name('livres.search');
+
+// Catégories (séances 1–3)
+Route::get('/categories', [App\Http\Controllers\CategorieController::class, 'index'])->name('categories.index');
+Route::get('/categories/{id}', [App\Http\Controllers\CategorieController::class, 'show'])->name('categories.show');
 
 // Route de démonstration pour comprendre les paramètres
 Route::get('/demo/hello/{nom?}', function ($nom = 'Étudiant') {
@@ -45,3 +49,66 @@ Route::get('/demo/hello/{nom?}', function ($nom = 'Étudiant') {
 Route::get('/test', function () {
     return '<h1>Test Laravel fonctionne !</h1><p>Si vous voyez ce message, Laravel fonctionne.</p>';
 })->name('test');
+
+// ---------------------------------------------------------
+// SÉANCE 4 : Authentification & gestion des utilisateurs
+// ---------------------------------------------------------
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\CheckRole;
+
+// 🔓 Routes publiques (login / register)
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+
+// 🔐 routes nécessitant une connexion
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // profil utilisateur
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password');
+    Route::delete('/profile/delete', [ProfileController::class, 'delete'])->name('profile.delete');
+
+    // tableau de bord selon rôle
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+        return match ($user->role) {
+            'admin' => view('dashboard.admin', ['user' => $user]),
+            'bibliothecaire' => view('dashboard.bibliothecaire', ['user' => $user]),
+            default => view('dashboard.user', ['user' => $user]),
+        };
+    })->name('dashboard');
+});
+
+// routes réservées aux administrateurs
+Route::middleware(['auth', CheckRole::class . ':admin'])
+    ->prefix('/admin')->name('admin.')
+    ->group(function () {
+        Route::get('/utilisateurs', [UserController::class, 'index'])->name('users.index');
+        Route::get('/utilisateurs/{id}', [UserController::class, 'show'])->name('users.show');
+        Route::delete('/utilisateurs/{id}', [UserController::class, 'delete'])->name('users.delete');
+        Route::patch('/utilisateurs/{id}/role', [UserController::class, 'updateRole'])->name('users.updateRole');
+    });
+
+// exemple de route pour bibliothécaire
+Route::middleware(['auth', CheckRole::class . ':bibliothecaire'])
+    ->prefix('/biblio')->name('biblio.')
+    ->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboard.bibliothecaire');
+        })->name('dashboard');
+    });
+
+// Routes de gestion des livres (Admin + Bibliothécaire)
+Route::middleware(['auth', CheckRole::class . ':admin,bibliothecaire'])->group(function () {
+    // Créer un livre : réservé à admin et bibliothécaire
+    Route::get('/livres/create', [LivreController::class, 'create'])->name('livres.create');
+    Route::post('/livres', [LivreController::class, 'store'])->name('livres.store');
+});

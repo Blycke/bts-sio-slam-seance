@@ -93,8 +93,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                                                <a class="nav-link" href="{{ route('livres.index') }}">
+                        <a class="nav-link {{ request()->routeIs('livres.*') ? 'active' : '' }}" href="{{ route('livres.index') }}">
                             <i class="fas fa-book"></i> Catalogue
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
+                            <i class="fas fa-tags"></i> Catégories
                         </a>
                     </li>
                     <li class="nav-item">
@@ -105,13 +110,44 @@
                 </ul>
                 
                 {{-- Barre de recherche --}}
-                <form class="d-flex" action="{{ route('livres.search') }}" method="GET">
+                <form class="d-flex me-3" action="{{ route('livres.search') }}" method="GET">
                     <input class="form-control me-2" type="search" name="q" 
                            placeholder="Rechercher un livre..." value="{{ request('q') }}">
                     <button class="btn btn-outline-light" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
+
+                {{-- Connexion / utilisateur --}}
+                <ul class="navbar-nav ms-auto">
+                    @guest
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">Connexion</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">Inscription</a>
+                        </li>
+                    @else
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                👤 {{ auth()->user()->nom }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
+                                @if(auth()->user()->isAdmin())
+                                    <li><a class="dropdown-item" href="{{ route('admin.users.index') }}">Gérer utilisateurs</a></li>
+                                @endif
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                        @csrf
+                                        <button class="dropdown-item" type="submit">Déconnexion</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @endguest
+                </ul>
             </div>
         </div>
     </nav>
@@ -142,6 +178,23 @@
 
     {{-- Contenu principal --}}
     <main class="py-4">
+        @if ($message = Session::get('success'))
+            <div class="container">
+                <div class="alert alert-success">{{ $message }}</div>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="container">
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         @yield('content')
     </main>
 

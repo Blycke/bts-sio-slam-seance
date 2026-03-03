@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('courriel')->unique();
             $table->timestamp('courriel_verifie_le')->nullable();
             $table->string('mot_de_passe');
-            $table->enum('role', ['utilisateur', 'admin'])->default('utilisateur');
+            // rôles possibles : utilisateur, admin, bibliothécaire
+            $table->enum('role', ['utilisateur', 'admin', 'bibliothecaire'])->default('utilisateur');
             $table->rememberToken();
             $table->timestamps();
             

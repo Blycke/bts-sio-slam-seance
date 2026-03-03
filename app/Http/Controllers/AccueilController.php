@@ -20,7 +20,7 @@ class AccueilController extends Controller
             'totalLivres' => Livre::count(),
             'livresDisponibles' => Livre::disponible()->count(),
             'totalEmprunts' => 12, // Sera implémenté dans une séance future
-            'totalUtilisateurs' => 25, // Sera implémenté dans une séance future
+            'totalUtilisateurs' => \App\Models\Utilisateur::count(),
             'totalCategories' => Categorie::actives()->count()
         ];
 
