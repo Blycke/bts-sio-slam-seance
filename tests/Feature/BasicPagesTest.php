@@ -40,4 +40,18 @@ class BasicPagesTest extends TestCase
         $response2 = $this->get('/categories/' . $cat->id);
         $response2->assertSee('Dune');
     }
+
+    public function test_welcome_page_shows_cover_stats()
+    {
+        Categorie::factory()->create(['nom' => 'Test Cat']);
+        // one book with cover, one without
+        Livre::factory()->create([ 'titre' => 'AvecCouverture', 'categorie_id' => 1, 'couverture' => 'cover.jpg' ]);
+        Livre::factory()->create([ 'titre' => 'SansCouverture', 'categorie_id' => 1, 'couverture' => null ]);
+
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $response->assertSeeText('Avec couvertures');
+        // percentage is wrapped in <sup>, use text assertion
+        $response->assertSeeText('50%');
+    }
 }

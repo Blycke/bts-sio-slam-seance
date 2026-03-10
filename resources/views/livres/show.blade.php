@@ -9,9 +9,16 @@
             {{-- Image du livre --}}
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <div class="book-cover book-cover-{{ $livre->categorie->slug ?? 'default' }}" style="height: 400px;">
-                        <div class="book-title" style="font-size: 18px;">{{ $livre->titre }}</div>
-                    </div>
+                    @if($livre->couverture)
+                        <img src="{{ Storage::disk('public')->url('livres/' . $livre->couverture) }}" 
+                             alt="Couverture de {{ $livre->titre }}" 
+                             class="card-img-top" 
+                             style="height:400px; object-fit:cover;">
+                    @else
+                        <div class="book-cover book-cover-{{ $livre->categorie->slug ?? 'default' }}" style="height: 400px;">
+                            <div class="book-title" style="font-size: 18px;">{{ $livre->titre }}</div>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Actions --}}

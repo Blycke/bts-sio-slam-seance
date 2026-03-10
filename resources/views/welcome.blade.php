@@ -22,7 +22,7 @@
 
     {{-- Statistiques --}}
     <div class="row mb-5">
-        <div class="col-md-3 mb-3">
+        <div class="col-md-2 mb-3">
             <div class="card text-center h-100 border-primary">
                 <div class="card-body">
                     <i class="fas fa-book fa-2x text-primary mb-2"></i>
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
+        <div class="col-md-2 mb-3">
             <div class="card text-center h-100 border-success">
                 <div class="card-body">
                     <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
+        <div class="col-md-2 mb-3">
             <div class="card text-center h-100 border-warning">
                 <div class="card-body">
                     <i class="fas fa-hand-holding fa-2x text-warning mb-2"></i>
@@ -49,12 +49,30 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
+        <div class="col-md-2 mb-3">
             <div class="card text-center h-100 border-info">
                 <div class="card-body">
                     <i class="fas fa-users fa-2x text-info mb-2"></i>
                     <h3 class="text-info">{{ $stats['totalUtilisateurs'] }}</h3>
                     <p class="card-text">Utilisateurs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3">
+            <div class="card text-center h-100 border-secondary">
+                <div class="card-body">
+                    <i class="fas fa-image fa-2x text-secondary mb-2"></i>
+                    <h3 class="text-secondary">{{ $stats['livresAvecCouverture'] }}</h3>
+                    <p class="card-text">Avec couvertures</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3">
+            <div class="card text-center h-100 border-dark">
+                <div class="card-body">
+                    <i class="fas fa-percent fa-2x text-dark mb-2"></i>
+                    <h3 class="text-dark">{{ $stats['pourcentageCouverture'] }}<sup>%</sup></h3>
+                    <p class="card-text">Couverture (%)</p>
                 </div>
             </div>
         </div>

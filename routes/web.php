@@ -50,6 +50,11 @@ Route::get('/test', function () {
     return '<h1>Test Laravel fonctionne !</h1><p>Si vous voyez ce message, Laravel fonctionne.</p>';
 })->name('test');
 
+// Route pour le diagramme UML
+Route::get('/diagramme-uml', function () {
+    return view('diagramme_uml');
+})->name('diagramme.uml');
+
 // ---------------------------------------------------------
 // SÉANCE 4 : Authentification & gestion des utilisateurs
 // ---------------------------------------------------------
@@ -79,10 +84,28 @@ Route::middleware('auth')->group(function () {
     // tableau de bord selon rôle
     Route::get('/dashboard', function () {
         $user = auth()->user();
+
+        // statistiques globales similaires à la page d'accueil
+        $totalLivres = \App\Models\Livre::count();
+        $livresAvecCouverture = \App\Models\Livre::whereNotNull('couverture')->count();
+        $stats = [
+            'totalLivres' => $totalLivres,
+            'livresDisponibles' => \App\Models\Livre::disponible()->count(),
+            'totalEmprunts' => 0, // placeholder pour future séance
+            'totalUtilisateurs' => \App\Models\Utilisateur::count(),
+            'totalCategories' => \App\Models\Categorie::actives()->count(),
+            'livresAvecCouverture' => $livresAvecCouverture,
+            'pourcentageCouverture' => $totalLivres ? round(100 * $livresAvecCouverture / $totalLivres) : 0,
+        ];
+
         return match ($user->role) {
-            'admin' => view('dashboard.admin', ['user' => $user]),
-            'bibliothecaire' => view('dashboard.bibliothecaire', ['user' => $user]),
-            default => view('dashboard.user', ['user' => $user]),
+            'admin' => view('dashboard.admin', ['user' => $user, 'stats' => $stats]),
+            'bibliothecaire' => view('dashboard.bibliothecaire', [
+                'user' => $user, 
+                'stats' => $stats,
+                'livresParCategorie' => \App\Models\Categorie::with('livres')->get()
+            ]),
+            default => view('dashboard.user', ['user' => $user, 'stats' => $stats]),
         };
     })->name('dashboard');
 });

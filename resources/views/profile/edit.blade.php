@@ -4,9 +4,23 @@
 <div class="container mt-5">
     <h2>Éditer mon profil</h2>
 
-    <form action="{{ route('profile.update') }}" method="POST">
+    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
+
+        <div class="mb-3">
+            <label for="photo" class="form-label">Photo de profil</label><br>
+            @if($user->photo)
+                <img src="{{ Storage::disk('public')->url('profiles/' . $user->photo) }}" 
+                     alt="Avatar" class="rounded-circle mb-2" width="80" height="80">
+            @else
+                <div class="mb-2">
+                    <i class="fas fa-user-circle fa-3x text-secondary"></i>
+                </div>
+            @endif
+            <input type="file" name="photo" class="form-control">
+        </div>
+
         <div class="mb-3">
             <label for="nom" class="form-label">Nom</label>
             <input type="text" name="nom" class="form-control" value="{{ old('nom', $user->nom) }}">

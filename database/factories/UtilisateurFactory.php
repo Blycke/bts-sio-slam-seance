@@ -19,6 +19,7 @@ class UtilisateurFactory extends Factory
             'courriel_verifie_le' => now(),
             'mot_de_passe' => Hash::make('password'),
             'role' => 'utilisateur',
+            'photo' => null, // pas de photo par défaut
             'remember_token' => Str::random(10),
         ];
     }

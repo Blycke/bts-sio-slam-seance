@@ -1,8 +1,16 @@
 {{-- Composant carte livre pour BiblioTech --}}
 <div class="card h-100 shadow-sm">
-    <div class="book-cover book-cover-{{ $livre->categorie->slug ?? 'default' }}">
-        <div class="book-title">{{ $livre->titre ?? 'Livre' }}</div>
-    </div>
+    @if($livre->couverture)
+        {{-- real image uploaded --}}
+        <img src="{{ Storage::disk('public')->url('livres/' . $livre->couverture) }}" 
+             alt="Couverture de {{ $livre->titre }}" 
+             class="card-img-top" 
+             style="height:250px; object-fit:cover;">
+    @else
+        <div class="book-cover book-cover-{{ $livre->categorie->slug ?? 'default' }}">
+            <div class="book-title">{{ $livre->titre ?? 'Livre' }}</div>
+        </div>
+    @endif
 
     <div class="card-body d-flex flex-column">
         <h5 class="card-title">{{ $livre->titre ?? 'Titre non disponible' }}</h5>

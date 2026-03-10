@@ -20,7 +20,8 @@ class Utilisateur extends Authenticatable
         'nom',
         'courriel',
         'mot_de_passe',
-        'role'
+        'role',
+        'photo', // chemin vers l'image de profil
     ];
     
     protected $hidden = [

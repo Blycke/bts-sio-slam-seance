@@ -22,6 +22,11 @@
         .card:hover {
             transform: translateY(-5px);
         }
+
+        /* avatar dans navbar */
+        .navbar .rounded-circle {
+            object-fit: cover;
+        }
         
         /* Styles pour les couvertures de livres */
         .book-cover {
@@ -35,6 +40,8 @@
             text-align: center;
             padding: 20px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            background-size: cover;
+            background-position: center;
         }
         
         .book-title {
@@ -129,8 +136,14 @@
                         </li>
                     @else
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                👤 {{ auth()->user()->nom }}
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                @if(auth()->user()->photo)
+                                    <img src="{{ Storage::disk('public')->url('profiles/' . auth()->user()->photo) }}" 
+                                         alt="avatar" class="rounded-circle me-1" width="30" height="30">
+                                @else
+                                    <i class="fas fa-user-circle me-1"></i>
+                                @endif
+                                {{ auth()->user()->nom }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>

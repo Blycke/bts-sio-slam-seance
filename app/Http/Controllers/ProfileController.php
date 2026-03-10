@@ -18,7 +18,15 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'nom'      => 'required|string|max:255',
             'courriel' => 'required|email|unique:utilisateurs,courriel,' . auth()->id(),
+            'photo'    => 'nullable|image|max:2048',
         ]);
+
+        // si un fichier a été envoyé, on le stocke dans disque public
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $path = $file->store('profiles', 'public');
+            $validated['photo'] = basename($path);
+        }
 
         auth()->user()->update($validated);
 
