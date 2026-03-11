@@ -3,352 +3,271 @@
 @section('title', 'Diagramme UML')
 
 @section('content')
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<div class="uml-page">
+<div class="uml-wrapper">
+
     <div class="uml-header">
-        <div class="uml-title-block">
-            <span class="uml-badge">UML 2.0</span>
-            <h1 class="uml-title">BiblioTech — Diagramme de Classes</h1>
-            <p class="uml-subtitle">Structure des modèles, relations et contrôleurs</p>
+        <div>
+            <h2 class="uml-title">Diagramme de Classes — BiblioTech</h2>
+            <p class="uml-sub">Structure des modèles, relations et contrôleurs · Laravel MVC</p>
         </div>
         <div class="uml-legend">
-            <div class="legend-item"><span class="legend-line solid"></span> Association</div>
-            <div class="legend-item"><span class="legend-line dashed"></span> Dépendance</div>
-            <div class="legend-item"><span class="legend-dot model"></span> Modèle</div>
-            <div class="legend-item"><span class="legend-dot controller"></span> Contrôleur</div>
+            <span class="leg-item">
+                <svg width="36" height="16" viewBox="0 0 36 16" overflow="visible">
+                    <line x1="2" y1="8" x2="30" y2="8" stroke="#2563eb" stroke-width="1.5"/>
+                    <polygon points="24,5 30,8 24,11" fill="#2563eb"/>
+                </svg>
+                Association
+            </span>
+            <span class="leg-item">
+                <svg width="36" height="16" viewBox="0 0 36 16" overflow="visible">
+                    <line x1="2" y1="8" x2="30" y2="8" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3"/>
+                    <polygon points="24,5 30,8 24,11" fill="#7c3aed"/>
+                </svg>
+                Dépendance «use»
+            </span>
+            <span class="leg-item"><span class="leg-dot blue"></span> Modèle</span>
+            <span class="leg-item"><span class="leg-dot purple"></span> Contrôleur</span>
         </div>
     </div>
 
-    <div class="uml-canvas-wrapper">
-        <div class="grid-overlay"></div>
-        <svg id="uml-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg">
+    <div class="uml-canvas">
+        <svg id="uml-svg" viewBox="0 0 980 660" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <!-- Arrow markers -->
-                <marker id="arrow-solid" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                    <polygon points="0 0, 10 3.5, 0 7" fill="#4a9eff"/>
+                <marker id="arr-blue" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                    <polygon points="0 0, 10 4, 0 8" fill="#2563eb"/>
                 </marker>
-                <marker id="arrow-dashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                    <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa"/>
+                <marker id="arr-purple" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                    <polygon points="0 0, 10 4, 0 8" fill="#7c3aed"/>
                 </marker>
-                <marker id="diamond-open" markerWidth="12" markerHeight="8" refX="0" refY="4" orient="auto">
-                    <polygon points="0 4, 5 0, 10 4, 5 8" fill="none" stroke="#4a9eff" stroke-width="1.5"/>
-                </marker>
-                <marker id="arrow-inherit" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
-                    <polygon points="0 0, 11 5, 0 10" fill="none" stroke="#34d399" stroke-width="1.5"/>
-                </marker>
-
-                <!-- Glow filters -->
-                <filter id="glow-blue">
-                    <feGaussianBlur stdDeviation="3" result="blur"/>
-                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                <filter id="shadow" x="-5%" y="-5%" width="115%" height="120%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#00000012"/>
                 </filter>
-                <filter id="glow-purple">
-                    <feGaussianBlur stdDeviation="2" result="blur"/>
-                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                </filter>
-
-                <!-- Class background gradient -->
-                <linearGradient id="grad-model" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:#1e3a5f;stop-opacity:1"/>
-                    <stop offset="100%" style="stop-color:#0f2040;stop-opacity:1"/>
-                </linearGradient>
-                <linearGradient id="grad-controller" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:#2d1b4e;stop-opacity:1"/>
-                    <stop offset="100%" style="stop-color:#1a0f30;stop-opacity:1"/>
-                </linearGradient>
-                <linearGradient id="grad-header-model" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#1d4ed8;stop-opacity:1"/>
-                    <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1"/>
-                </linearGradient>
-                <linearGradient id="grad-header-ctrl" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1"/>
-                    <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1"/>
-                </linearGradient>
             </defs>
 
-            <!-- ===================== RELATIONSHIPS ===================== -->
+            <!-- ① Categorie (1) ——> (*) Livre — simple association -->
+            <line x1="252" y1="110" x2="338" y2="110"
+                  stroke="#2563eb" stroke-width="1.5"
+                  marker-end="url(#arr-blue)"/>
+            <text x="242" y="103" font-family="Inter" font-size="11" fill="#2563eb" font-weight="600">1</text>
+            <text x="342" y="103" font-family="Inter" font-size="11" fill="#2563eb" font-weight="600">*</text>
+            <text x="295" y="128" font-family="Inter" font-size="10" fill="#6b7280" text-anchor="middle" font-style="italic">contient</text>
 
-            <!-- Categorie (1) ---> Livre (N) : composition -->
-            <line x1="280" y1="120" x2="380" y2="120"
-                  stroke="#4a9eff" stroke-width="2"
-                  marker-start="url(#diamond-open)"
-                  marker-end="url(#arrow-solid)"
-                  class="rel-line"/>
-            <text x="328" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#4a9eff">1</text>
-            <text x="370" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#4a9eff">*</text>
-            <text x="328" y="140" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b9fd4" letter-spacing="0.5">contient</text>
+            <!-- ② Livre (1) ——> (*) Emprunt -->
+            <line x1="552" y1="150" x2="668" y2="285"
+                  stroke="#2563eb" stroke-width="1.5"
+                  marker-end="url(#arr-blue)"/>
+            <text x="558" y="143" font-family="Inter" font-size="11" fill="#2563eb" font-weight="600">1</text>
+            <text x="654" y="282" font-family="Inter" font-size="11" fill="#2563eb" font-weight="600">*</text>
 
-            <!-- Livre --> Emprunt -->
-            <line x1="550" y1="220" x2="660" y2="270"
-                  stroke="#4a9eff" stroke-width="2"
-                  marker-end="url(#arrow-solid)"
-                  class="rel-line"/>
-            <text x="605" y="240" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#4a9eff">1</text>
-            <text x="650" y="262" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#4a9eff">*</text>
+            <!-- ③ Utilisateur (1) ——> (*) Emprunt -->
+            <line x1="252" y1="428" x2="668" y2="368"
+                  stroke="#2563eb" stroke-width="1.5"
+                  marker-end="url(#arr-blue)"/>
+            <text x="258" y="421" font-family="Inter" font-size="11" fill="#2563eb" font-weight="600">1</text>
+            <text x="654" y="363" font-family="Inter" font-size="11" fill="#2563eb" font-weight="600">*</text>
 
-            <!-- Utilisateur --> Emprunt -->
-            <line x1="340" y1="390" x2="660" y2="340"
-                  stroke="#4a9eff" stroke-width="2"
-                  marker-end="url(#arrow-solid)"
-                  class="rel-line"/>
-            <text x="490" y="355" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#4a9eff">1</text>
-            <text x="650" y="338" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#4a9eff">*</text>
+            <!-- ④ AccueilController - -> Categorie -->
+            <line x1="415" y1="500" x2="148" y2="235"
+                  stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6,4"
+                  marker-end="url(#arr-purple)"/>
+            <text x="268" y="390" font-family="Inter" font-size="10" fill="#7c3aed"
+                  font-style="italic" transform="rotate(-30, 268, 390)">«use»</text>
 
-            <!-- AccueilController ..> Categorie -->
-            <line x1="610" y1="490" x2="150" y2="230"
-                  stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="6,4"
-                  marker-end="url(#arrow-dashed)"
-                  class="rel-line dep"/>
-            <text x="380" y="365" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#a78bfa" letter-spacing="0.3">«use»</text>
+            <!-- ⑤ AccueilController - -> Livre -->
+            <line x1="489" y1="500" x2="446" y2="252"
+                  stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6,4"
+                  marker-end="url(#arr-purple)"/>
+            <text x="492" y="418" font-family="Inter" font-size="10" fill="#7c3aed" font-style="italic">«use»</text>
 
-            <!-- AccueilController ..> Livre -->
-            <line x1="610" y1="490" x2="420" y2="230"
-                  stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="6,4"
-                  marker-end="url(#arrow-dashed)"
-                  class="rel-line dep"/>
-            <text x="515" y="380" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#a78bfa" letter-spacing="0.3">«use»</text>
+            <!-- ⑥ AccueilController - -> Utilisateur -->
+            <line x1="372" y1="535" x2="252" y2="525"
+                  stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6,4"
+                  marker-end="url(#arr-purple)"/>
+            <text x="307" y="522" font-family="Inter" font-size="10" fill="#7c3aed"
+                  font-style="italic" text-anchor="middle">«use»</text>
 
-            <!-- AccueilController ..> Utilisateur -->
-            <line x1="610" y1="490" x2="340" y2="430"
-                  stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="6,4"
-                  marker-end="url(#arrow-dashed)"
-                  class="rel-line dep"/>
 
-            <!-- ===================== CLASS: Categorie ===================== -->
-            <g class="uml-class" transform="translate(40, 50)">
-                <!-- Shadow -->
-                <rect x="4" y="4" width="200" height="170" rx="6" fill="rgba(0,0,0,0.4)"/>
-                <!-- Body -->
-                <rect x="0" y="0" width="200" height="170" rx="6" fill="url(#grad-model)" stroke="#2563eb" stroke-width="1.5"/>
-                <!-- Stereotype -->
-                <rect x="0" y="0" width="200" height="22" rx="6" fill="none"/>
-                <rect x="0" y="6" width="200" height="16" fill="none"/>
-                <text x="100" y="17" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#93c5fd" letter-spacing="1">«model»</text>
-                <!-- Header -->
-                <rect x="0" y="22" width="200" height="32" fill="url(#grad-header-model)" rx="0"/>
-                <text x="100" y="43" text-anchor="middle" font-family="Syne" font-size="15" font-weight="700" fill="white">Categorie</text>
-                <!-- Divider -->
-                <line x1="0" y1="54" x2="200" y2="54" stroke="#2563eb" stroke-width="1"/>
-                <!-- Attributes -->
-                <text x="12" y="71" font-family="JetBrains Mono" font-size="11" fill="#93c5fd">– id : int</text>
-                <text x="12" y="87" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ nom : string</text>
-                <text x="12" y="103" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ description : text</text>
-                <text x="12" y="119" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ slug : string</text>
-                <text x="12" y="135" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ active : bool</text>
-                <!-- Methods divider -->
-                <line x1="0" y1="145" x2="200" y2="145" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="4,3"/>
-                <text x="12" y="161" font-family="JetBrains Mono" font-size="11" fill="#60a5fa">+ livres()</text>
+            <!-- ================================================================ -->
+            <!--  CLASSE : Categorie  (x=40, y=50, w=212, h=183)                 -->
+            <!--  bord droit x=252                                                -->
+            <!-- ================================================================ -->
+            <g class="cls" transform="translate(40, 50)" filter="url(#shadow)">
+                <rect width="212" height="183" rx="6" fill="white" stroke="#d1d5db" stroke-width="1"/>
+                <rect width="212" height="46" rx="6" fill="#2563eb"/>
+                <rect y="38" width="212" height="8" fill="#2563eb"/>
+                <text x="106" y="15" text-anchor="middle" font-family="Inter" font-size="9" fill="#bfdbfe" letter-spacing="1.5">«model»</text>
+                <text x="106" y="33" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="white">Categorie</text>
+                <line x1="0" y1="46" x2="212" y2="46" stroke="#e5e7eb" stroke-width="1"/>
+                <text x="14" y="64"  font-family="Inter" font-size="11" fill="#9ca3af">- id : int</text>
+                <text x="14" y="81"  font-family="Inter" font-size="11" fill="#374151">+ nom : string</text>
+                <text x="14" y="98"  font-family="Inter" font-size="11" fill="#374151">+ description : text</text>
+                <text x="14" y="115" font-family="Inter" font-size="11" fill="#374151">+ slug : string</text>
+                <text x="14" y="132" font-family="Inter" font-size="11" fill="#374151">+ active : bool</text>
+                <line x1="0" y1="144" x2="212" y2="144" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="14" y="162" font-family="Inter" font-size="11" fill="#2563eb">+ livres() : Collection</text>
             </g>
 
-            <!-- ===================== CLASS: Livre ===================== -->
-            <g class="uml-class" transform="translate(380, 50)">
-                <rect x="4" y="4" width="200" height="185" rx="6" fill="rgba(0,0,0,0.4)"/>
-                <rect x="0" y="0" width="200" height="185" rx="6" fill="url(#grad-model)" stroke="#2563eb" stroke-width="1.5"/>
-                <text x="100" y="17" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#93c5fd" letter-spacing="1">«model»</text>
-                <rect x="0" y="22" width="200" height="32" fill="url(#grad-header-model)"/>
-                <text x="100" y="43" text-anchor="middle" font-family="Syne" font-size="15" font-weight="700" fill="white">Livre</text>
-                <line x1="0" y1="54" x2="200" y2="54" stroke="#2563eb" stroke-width="1"/>
-                <text x="12" y="71" font-family="JetBrains Mono" font-size="11" fill="#93c5fd">– id : int</text>
-                <text x="12" y="87" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ titre : string</text>
-                <text x="12" y="103" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ auteur : string</text>
-                <text x="12" y="119" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ isbn : string</text>
-                <text x="12" y="135" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ disponible : bool</text>
-                <text x="12" y="151" font-family="JetBrains Mono" font-size="11" fill="#93c5fd">– categorie_id : int</text>
-                <line x1="0" y1="160" x2="200" y2="160" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="4,3"/>
-                <text x="12" y="176" font-family="JetBrains Mono" font-size="11" fill="#60a5fa">+ categorie()</text>
+            <!-- ================================================================ -->
+            <!--  CLASSE : Livre  (x=340, y=50, w=212, h=200)                    -->
+            <!--  bord gauche x=340, bord droit x=552, bas y=250                 -->
+            <!-- ================================================================ -->
+            <g class="cls" transform="translate(340, 50)" filter="url(#shadow)">
+                <rect width="212" height="200" rx="6" fill="white" stroke="#d1d5db" stroke-width="1"/>
+                <rect width="212" height="46" rx="6" fill="#2563eb"/>
+                <rect y="38" width="212" height="8" fill="#2563eb"/>
+                <text x="106" y="15" text-anchor="middle" font-family="Inter" font-size="9" fill="#bfdbfe" letter-spacing="1.5">«model»</text>
+                <text x="106" y="33" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="white">Livre</text>
+                <line x1="0" y1="46" x2="212" y2="46" stroke="#e5e7eb" stroke-width="1"/>
+                <text x="14" y="64"  font-family="Inter" font-size="11" fill="#9ca3af">- id : int</text>
+                <text x="14" y="81"  font-family="Inter" font-size="11" fill="#374151">+ titre : string</text>
+                <text x="14" y="98"  font-family="Inter" font-size="11" fill="#374151">+ auteur : string</text>
+                <text x="14" y="115" font-family="Inter" font-size="11" fill="#374151">+ isbn : string</text>
+                <text x="14" y="132" font-family="Inter" font-size="11" fill="#374151">+ disponible : bool</text>
+                <text x="14" y="149" font-family="Inter" font-size="11" fill="#9ca3af">- categorie_id : int</text>
+                <line x1="0" y1="161" x2="212" y2="161" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="14" y="179" font-family="Inter" font-size="11" fill="#2563eb">+ categorie() : Categorie</text>
             </g>
 
-            <!-- ===================== CLASS: Utilisateur ===================== -->
-            <g class="uml-class" transform="translate(100, 330)">
-                <rect x="4" y="4" width="200" height="170" rx="6" fill="rgba(0,0,0,0.4)"/>
-                <rect x="0" y="0" width="200" height="170" rx="6" fill="url(#grad-model)" stroke="#2563eb" stroke-width="1.5"/>
-                <text x="100" y="17" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#93c5fd" letter-spacing="1">«model»</text>
-                <rect x="0" y="22" width="200" height="32" fill="url(#grad-header-model)"/>
-                <text x="100" y="43" text-anchor="middle" font-family="Syne" font-size="15" font-weight="700" fill="white">Utilisateur</text>
-                <line x1="0" y1="54" x2="200" y2="54" stroke="#2563eb" stroke-width="1"/>
-                <text x="12" y="71" font-family="JetBrains Mono" font-size="11" fill="#93c5fd">– id : int</text>
-                <text x="12" y="87" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ nom : string</text>
-                <text x="12" y="103" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ courriel : string</text>
-                <text x="12" y="119" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ role : enum</text>
-                <text x="12" y="135" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ password : string</text>
-                <line x1="0" y1="145" x2="200" y2="145" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="4,3"/>
-                <text x="12" y="161" font-family="JetBrains Mono" font-size="11" fill="#60a5fa">+ emprunts()</text>
+            <!-- ================================================================ -->
+            <!--  CLASSE : Emprunt  (x=670, y=270, w=222, h=200)                 -->
+            <!-- ================================================================ -->
+            <g class="cls" transform="translate(670, 270)" filter="url(#shadow)">
+                <rect width="222" height="200" rx="6" fill="white" stroke="#d1d5db" stroke-width="1"/>
+                <rect width="222" height="46" rx="6" fill="#2563eb"/>
+                <rect y="38" width="222" height="8" fill="#2563eb"/>
+                <text x="111" y="15" text-anchor="middle" font-family="Inter" font-size="9" fill="#bfdbfe" letter-spacing="1.5">«model»</text>
+                <text x="111" y="33" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="white">Emprunt</text>
+                <line x1="0" y1="46" x2="222" y2="46" stroke="#e5e7eb" stroke-width="1"/>
+                <text x="14" y="64"  font-family="Inter" font-size="11" fill="#9ca3af">- id : int</text>
+                <text x="14" y="81"  font-family="Inter" font-size="11" fill="#9ca3af">- livre_id : int</text>
+                <text x="14" y="98"  font-family="Inter" font-size="11" fill="#9ca3af">- utilisateur_id : int</text>
+                <text x="14" y="115" font-family="Inter" font-size="11" fill="#374151">+ date_emprunt : date</text>
+                <text x="14" y="132" font-family="Inter" font-size="11" fill="#374151">+ date_retour : date</text>
+                <text x="14" y="149" font-family="Inter" font-size="11" fill="#374151">+ statut : enum</text>
+                <line x1="0" y1="161" x2="222" y2="161" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="14" y="179" font-family="Inter" font-size="11" fill="#2563eb">+ livre() : Livre</text>
             </g>
 
-            <!-- ===================== CLASS: Emprunt ===================== -->
-            <g class="uml-class" transform="translate(650, 255)">
-                <rect x="4" y="4" width="210" height="190" rx="6" fill="rgba(0,0,0,0.4)"/>
-                <rect x="0" y="0" width="210" height="190" rx="6" fill="url(#grad-model)" stroke="#2563eb" stroke-width="1.5"/>
-                <text x="105" y="17" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#93c5fd" letter-spacing="1">«model»</text>
-                <rect x="0" y="22" width="210" height="32" fill="url(#grad-header-model)"/>
-                <text x="105" y="43" text-anchor="middle" font-family="Syne" font-size="15" font-weight="700" fill="white">Emprunt</text>
-                <line x1="0" y1="54" x2="210" y2="54" stroke="#2563eb" stroke-width="1"/>
-                <text x="12" y="71" font-family="JetBrains Mono" font-size="11" fill="#93c5fd">– id : int</text>
-                <text x="12" y="87" font-family="JetBrains Mono" font-size="11" fill="#93c5fd">– livre_id : int</text>
-                <text x="12" y="103" font-family="JetBrains Mono" font-size="11" fill="#93c5fd">– utilisateur_id : int</text>
-                <text x="12" y="119" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ date_emprunt : date</text>
-                <text x="12" y="135" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ date_retour : date</text>
-                <text x="12" y="151" font-family="JetBrains Mono" font-size="11" fill="#bfdbfe">+ statut : enum</text>
-                <line x1="0" y1="161" x2="210" y2="161" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="4,3"/>
-                <text x="12" y="177" font-family="JetBrains Mono" font-size="11" fill="#60a5fa">+ livre()</text>
+            <!-- ================================================================ -->
+            <!--  CLASSE : Utilisateur  (x=40, y=340, w=212, h=183)              -->
+            <!--  bord droit x=252, bas y=523                                    -->
+            <!-- ================================================================ -->
+            <g class="cls" transform="translate(40, 340)" filter="url(#shadow)">
+                <rect width="212" height="183" rx="6" fill="white" stroke="#d1d5db" stroke-width="1"/>
+                <rect width="212" height="46" rx="6" fill="#2563eb"/>
+                <rect y="38" width="212" height="8" fill="#2563eb"/>
+                <text x="106" y="15" text-anchor="middle" font-family="Inter" font-size="9" fill="#bfdbfe" letter-spacing="1.5">«model»</text>
+                <text x="106" y="33" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="white">Utilisateur</text>
+                <line x1="0" y1="46" x2="212" y2="46" stroke="#e5e7eb" stroke-width="1"/>
+                <text x="14" y="64"  font-family="Inter" font-size="11" fill="#9ca3af">- id : int</text>
+                <text x="14" y="81"  font-family="Inter" font-size="11" fill="#374151">+ nom : string</text>
+                <text x="14" y="98"  font-family="Inter" font-size="11" fill="#374151">+ courriel : string</text>
+                <text x="14" y="115" font-family="Inter" font-size="11" fill="#374151">+ role : enum</text>
+                <text x="14" y="132" font-family="Inter" font-size="11" fill="#374151">+ password : string</text>
+                <line x1="0" y1="144" x2="212" y2="144" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="14" y="162" font-family="Inter" font-size="11" fill="#2563eb">+ emprunts() : Collection</text>
             </g>
 
-            <!-- ===================== CLASS: AccueilController ===================== -->
-            <g class="uml-class" transform="translate(500, 490)">
-                <rect x="4" y="4" width="220" height="115" rx="6" fill="rgba(0,0,0,0.4)"/>
-                <rect x="0" y="0" width="220" height="115" rx="6" fill="url(#grad-controller)" stroke="#7c3aed" stroke-width="1.5"/>
-                <text x="110" y="17" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#c4b5fd" letter-spacing="1">«controller»</text>
-                <rect x="0" y="22" width="220" height="32" fill="url(#grad-header-ctrl)"/>
-                <text x="110" y="43" text-anchor="middle" font-family="Syne" font-size="14" font-weight="700" fill="white">AccueilController</text>
-                <line x1="0" y1="54" x2="220" y2="54" stroke="#7c3aed" stroke-width="1"/>
-                <line x1="0" y1="68" x2="220" y2="68" stroke="#2d1b4e" stroke-width="1" stroke-dasharray="4,3"/>
-                <text x="12" y="85" font-family="JetBrains Mono" font-size="11" fill="#c4b5fd">+ index() : View</text>
-                <text x="12" y="101" font-family="JetBrains Mono" font-size="11" fill="#ddd6fe">+ show($id) : View</text>
+            <!-- ================================================================ -->
+            <!--  CLASSE : AccueilController  (x=372, y=500, w=238, h=130)       -->
+            <!-- ================================================================ -->
+            <g class="cls ctrl" transform="translate(372, 500)" filter="url(#shadow)">
+                <rect width="238" height="130" rx="6" fill="white" stroke="#d1d5db" stroke-width="1"/>
+                <rect width="238" height="46" rx="6" fill="#7c3aed"/>
+                <rect y="38" width="238" height="8" fill="#7c3aed"/>
+                <text x="119" y="15" text-anchor="middle" font-family="Inter" font-size="9" fill="#ddd6fe" letter-spacing="1.5">«controller»</text>
+                <text x="119" y="33" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="white">AccueilController</text>
+                <line x1="0" y1="46" x2="238" y2="46" stroke="#e5e7eb" stroke-width="1"/>
+                <line x1="0" y1="60" x2="238" y2="60" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+                <text x="14" y="78"  font-family="Inter" font-size="11" fill="#7c3aed">+ index() : View</text>
+                <text x="14" y="95"  font-family="Inter" font-size="11" fill="#374151">+ show(int $id) : View</text>
+                <text x="14" y="112" font-family="Inter" font-size="11" fill="#374151">+ accueil() : View</text>
             </g>
 
         </svg>
     </div>
+
+    <p class="uml-note">UML 2.0 · BiblioTech · Formation BTS SIO SLAM · Séance 1</p>
 </div>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
-
-    .uml-page {
-        font-family: 'Syne', sans-serif;
-        background: #060d1a;
-        min-height: 100vh;
-        padding: 32px;
-        color: #e2e8f0;
-    }
-
-    .uml-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 28px;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .uml-badge {
-        display: inline-block;
-        background: linear-gradient(90deg, #1d4ed8, #7c3aed);
-        color: white;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 10px;
-        letter-spacing: 2px;
-        padding: 3px 10px;
-        border-radius: 20px;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-    }
-
-    .uml-title {
-        font-size: 26px;
-        font-weight: 800;
-        margin: 0 0 4px 0;
-        background: linear-gradient(90deg, #60a5fa, #a78bfa);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        letter-spacing: -0.5px;
-    }
-
-    .uml-subtitle {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 12px;
-        color: #4a6fa5;
-        margin: 0;
-        letter-spacing: 0.5px;
-    }
-
-    .uml-legend {
-        display: flex;
-        gap: 18px;
-        align-items: center;
-        flex-wrap: wrap;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.07);
-        border-radius: 10px;
-        padding: 12px 18px;
-    }
-
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        color: #94a3b8;
-    }
-
-    .legend-line {
-        display: inline-block;
-        width: 28px;
-        height: 2px;
-        border-radius: 2px;
-    }
-
-    .legend-line.solid { background: #4a9eff; }
-    .legend-line.dashed {
-        background: none;
-        border-top: 2px dashed #a78bfa;
-    }
-
-    .legend-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 2px;
-        display: inline-block;
-    }
-    .legend-dot.model { background: #2563eb; }
-    .legend-dot.controller { background: #7c3aed; }
-
-    .uml-canvas-wrapper {
-        position: relative;
-        background: #080f1e;
-        border: 1px solid rgba(37, 99, 235, 0.2);
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow:
-            0 0 0 1px rgba(37, 99, 235, 0.1),
-            0 20px 80px rgba(0, 0, 0, 0.6),
-            inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-
-    .grid-overlay {
-        position: absolute;
-        inset: 0;
-        background-image:
-            linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
-        background-size: 40px 40px;
-        pointer-events: none;
-    }
-
-    #uml-svg {
-        width: 100%;
-        height: auto;
-        display: block;
-        padding: 20px;
-    }
-
-    .uml-class {
-        transition: transform 0.2s ease;
-        cursor: default;
-    }
-
-    .uml-class:hover {
-        filter: drop-shadow(0 0 12px rgba(74, 158, 255, 0.4));
-    }
-
-    .rel-line {
-        transition: stroke-opacity 0.2s;
-    }
-
-    .rel-line.dep:hover {
-        stroke: #c4b5fd;
-    }
+.uml-wrapper {
+    font-family: 'Inter', sans-serif;
+    max-width: 1100px;
+    margin: 32px auto;
+    padding: 0 24px 48px;
+}
+.uml-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+.uml-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 4px;
+}
+.uml-sub {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+}
+.uml-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 18px;
+}
+.leg-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #4b5563;
+}
+.leg-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+}
+.leg-dot.blue   { background: #2563eb; }
+.leg-dot.purple { background: #7c3aed; }
+.uml-canvas {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+#uml-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    padding: 16px;
+    box-sizing: border-box;
+}
+.cls { cursor: default; }
+.cls:hover {
+    filter: drop-shadow(0 6px 18px rgba(37, 99, 235, 0.18)) !important;
+}
+.cls.ctrl:hover {
+    filter: drop-shadow(0 6px 18px rgba(124, 58, 237, 0.18)) !important;
+}
+.uml-note {
+    text-align: right;
+    font-size: 11px;
+    color: #9ca3af;
+    margin: 10px 0 0;
+}
 </style>
-@endsectionbsa
+@endsection
